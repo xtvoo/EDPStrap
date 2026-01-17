@@ -106,15 +106,15 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
         }
 
-        public bool CleanerFishstrap
+        public bool CleanerEDPStrap
         {
-            get => CleanerItems.Contains("FishstrapLogs");
+            get => CleanerItems.Contains("EDPStrapLogs");
             set
             {
                 if (value)
-                    CleanerItems.Add("FishstrapLogs");
+                    CleanerItems.Add("EDPStrapLogs");
                 else
-                    CleanerItems.Remove("FishstrapLogs");
+                    CleanerItems.Remove("EDPStrapLogs");
             }
         }
     }

@@ -1,41 +1,41 @@
 {
   "profiles": {
-    "Fishstrap (Launch)": {
+    "EDP Strap (Launch)": {
       "commandName": "Project"
     },
-    "Fishstrap (Quiet Launch)": {
+    "EDP Strap (Quiet Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-quiet"
     },
-    "Fishstrap (Uninstall)": {
+    "EDP Strap (Uninstall)": {
       "commandName": "Project",
       "commandLineArgs": "-uninstall"
     },
-    "Fishstrap (Quiet Uninstall)": {
+    "EDP Strap (Quiet Uninstall)": {
       "commandName": "Project",
       "commandLineArgs": "-uninstall -quiet"
     },
-    "Fishstrap (Menu)": {
+    "EDP Strap (Menu)": {
       "commandName": "Project",
       "commandLineArgs": "-menu"
     },
-    "Fishstrap (Deeplink)": {
+    "EDP Strap (Deeplink)": {
       "commandName": "Project",
       "commandLineArgs": "-player \"roblox://experiences/start?placeId=13700835620\""
     },
-    "Fishstrap (Channel Launch)": {
+    "EDP Strap (Channel Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-player \"roblox-player:1+launchmode:play+channel:zcontrol+LaunchExp:InApp\""
     },
-    "Fishstrap (Studio Launch)": {
+    "EDP Strap (Studio Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-studio"
     },
-    "Fishstrap (Watcher)": {
+    "EDP Strap (Watcher)": {
       "commandName": "Project",
       "commandLineArgs": "-watcher"
     },
-    "Fishstrap (Bloxshade)": {
+    "EDP Strap (Bloxshade)": {
       "commandName": "Project",
       "commandLineArgs": "-bloxshade"
     }

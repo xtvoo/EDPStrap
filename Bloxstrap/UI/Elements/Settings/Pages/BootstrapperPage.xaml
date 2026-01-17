@@ -1,4 +1,4 @@
-﻿<ui:UiPage x:Class="Bloxstrap.UI.Elements.Settings.Pages.BehaviourPage"
+<ui:UiPage x:Class="Bloxstrap.UI.Elements.Settings.Pages.BehaviourPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -19,7 +19,7 @@
 
         <controls:OptionControl 
             Header="{x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Title}"
-            Description="{Binding Source={x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
+            Description="{Binding Source={x:Static resources:Strings.Menu_Bootstrapper_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/edpstrap/edpstrap/wiki/Account-Access#what-will-edpstrap-access-with-your-account'}">
             <StackPanel Orientation="Horizontal">
                 <ui:SymbolIcon Symbol="Warning20" Margin="0,2,8,0" Foreground="Orange">
                     <ui:SymbolIcon.Style>
@@ -96,7 +96,7 @@
                 <controls:OptionControl 
     Header="{x:Static resources:Strings.Menu_Bootstrapper_Cleaner_IncludeBloxstrap_Title}"
     Description="{x:Static resources:Strings.Menu_Bootstrapper_Cleaner_IncludeBloxstrap_Description}">
-                    <ui:ToggleSwitch IsChecked="{Binding CleanerFishstrap, Mode=TwoWay}" />
+                    <ui:ToggleSwitch IsChecked="{Binding CleanerEDP Strap, Mode=TwoWay}" />
                 </controls:OptionControl>
             </StackPanel>
         </ui:CardExpander>
