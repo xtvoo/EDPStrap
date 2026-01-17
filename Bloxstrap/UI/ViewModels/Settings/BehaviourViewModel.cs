@@ -63,6 +63,16 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.Settings.Prop.BackgroundUpdatesEnabled = value;
         }
 
+        public bool AutoLogCleanup
+        {
+            get => App.Settings.Prop.AutoLogCleanup;
+            set
+            {
+                App.Settings.Prop.AutoLogCleanup = value;
+                OnPropertyChanged(nameof(AutoLogCleanup));
+            }
+        }
+
         public CleanerOptions SelectedCleanUpMode
         {
             get => App.Settings.Prop.CleanerOptions;

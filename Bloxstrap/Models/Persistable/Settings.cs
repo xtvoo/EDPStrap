@@ -14,6 +14,7 @@ namespace Bloxstrap.Models.Persistable
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public string WindowBackgroundImage { get; set; } = "";
         public double WindowBackgroundOpacity { get; set; } = 0.8;
+        public bool AutoLogCleanup { get; set; } = false;
         public Theme Theme { get; set; } = Theme.Default;
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool DeveloperMode { get; set; } = false;

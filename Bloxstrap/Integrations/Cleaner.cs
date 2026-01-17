@@ -35,7 +35,10 @@ namespace Bloxstrap.Integrations
                 _ => int.MaxValue,
             };
 
-            var Threshold = DateTime.Now.AddHours(-MaxFileAge);
+            if (App.Settings.Prop.AutoLogCleanup && MaxFileAge == int.MaxValue)
+                MaxFileAge = 7;
+
+            var Threshold = DateTime.Now.AddHours(-MaxFileAge * 24);
             int DeletedItems = 0;
 
             foreach (var directory in Directories)
@@ -44,7 +47,9 @@ namespace Bloxstrap.Integrations
                 string Type = directory.Key;
                 DeletedItems = 0;
 
-                if (!App.Settings.Prop.CleanerDirectories.Contains(Type))
+                bool isAutoCleanType = (Type == "RobloxLogs" || Type == "EDPStrapLogs");
+
+                if (!App.Settings.Prop.CleanerDirectories.Contains(Type) && !(App.Settings.Prop.AutoLogCleanup && isAutoCleanType))
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Skipping {Type}");
                     continue;
