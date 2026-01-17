@@ -160,6 +160,8 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="180" />
@@ -178,6 +180,21 @@
                     <ui:Button Grid.Column="1" Margin="4,0,0,0" Height="35" Icon="Folder24" Content="{x:Static resources:Strings.Common_Browse}" Command="{Binding BrowseCustomIconLocationCommand}" />
                 </Grid>
                 <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,4,0,0" FontSize="12" Text="{x:Static resources:Strings.Menu_Appearance_CustomisationIcon_Description}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,12,0,0"  Text="Window Background" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <Grid Grid.Row="4" Grid.Column="1" Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBox Grid.Column="0" Margin="0,0,4,0" Text="{Binding WindowBackgroundImage, Mode=TwoWay}" />
+                    <ui:Button Grid.Column="1" Margin="4,0,0,0" Height="35" Icon="Folder24" Content="{x:Static resources:Strings.Common_Browse}" Command="{Binding BrowseWindowBackgroundImageCommand}" />
+                    <ui:Button Grid.Column="2" Margin="4,0,0,0" Height="35" Icon="Delete24" Content="{x:Static resources:Strings.Common_Delete}" Command="{Binding ClearWindowBackgroundImageCommand}" />
+                </Grid>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,12,0,0" Text="Background Opacity" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <Slider Grid.Row="5" Grid.Column="1" Margin="0,12,0,0" Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding WindowBackgroundOpacity, Mode=TwoWay}" />
             </Grid>
         </ui:CardExpander>
     </StackPanel>

@@ -26,6 +26,9 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        
+        <Image x:Name="BackgroundImage" Grid.RowSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+        <Rectangle Fill="{ui:ThemeResource ApplicationBackgroundBrush}" Opacity="0.5" Grid.RowSpan="3" />
 
         <ui:Snackbar
             x:Name="AlreadyRunningSnackbar"

@@ -27,6 +27,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand EditCustomThemeCommand => new RelayCommand(EditCustomTheme);
         public ICommand ExportCustomThemeCommand => new RelayCommand(ExportCustomTheme);
 
+        public ICommand BrowseWindowBackgroundImageCommand => new RelayCommand(BrowseWindowBackgroundImage);
+        public ICommand ClearWindowBackgroundImageCommand => new RelayCommand(ClearWindowBackgroundImage);
+
         private void PreviewBootstrapper()
         {
             IBootstrapperDialog dialog = App.Settings.Prop.BootstrapperStyle.GetNew();
@@ -131,6 +134,47 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                 OnPropertyChanged(nameof(Icon));
                 OnPropertyChanged(nameof(Icons));
+            }
+
+        }
+
+        private void BrowseWindowBackgroundImage()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Image files|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp"
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            WindowBackgroundImage = dialog.FileName;
+        }
+
+        private void ClearWindowBackgroundImage()
+        {
+            WindowBackgroundImage = "";
+        }
+
+        public string WindowBackgroundImage
+        {
+            get => App.Settings.Prop.WindowBackgroundImage;
+            set
+            {
+                App.Settings.Prop.WindowBackgroundImage = value;
+                OnPropertyChanged(nameof(WindowBackgroundImage));
+                ((MainWindow)Window.GetWindow(_page)!).ApplyBackground();
+            }
+        }
+
+        public double WindowBackgroundOpacity
+        {
+            get => App.Settings.Prop.WindowBackgroundOpacity;
+            set
+            {
+                App.Settings.Prop.WindowBackgroundOpacity = value;
+                OnPropertyChanged(nameof(WindowBackgroundOpacity));
+                ((MainWindow)Window.GetWindow(_page)!).ApplyBackground();
             }
         }
 

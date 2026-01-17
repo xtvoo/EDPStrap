@@ -40,6 +40,8 @@ namespace Bloxstrap.UI.Elements.Settings
             gbs.Opacity = viewModel.GBSEnabled ? 1 : 0.5;
             gbs.IsEnabled = viewModel.GBSEnabled; // binding doesnt work as expected so we are setting it in here instead
 
+            ApplyBackground();
+
             LoadState();
 
             string? lastPageName = App.State.Prop.LastPage;
@@ -148,6 +150,36 @@ namespace Bloxstrap.UI.Elements.Settings
                 LaunchHandler.LaunchRoblox(LaunchMode.Player);
             else
                 App.SoftTerminate();
+        }
+
+        public void ApplyBackground()
+        {
+            if (BackgroundImage is null)
+                return;
+
+            if (!string.IsNullOrEmpty(App.Settings.Prop.WindowBackgroundImage) && System.IO.File.Exists(App.Settings.Prop.WindowBackgroundImage))
+            {
+                try
+                {
+                    var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(App.Settings.Prop.WindowBackgroundImage);
+                    bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    BackgroundImage.Source = bitmap;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("MainWindow::ApplyBackground", ex);
+                    BackgroundImage.Source = null;
+                }
+            }
+            else
+            {
+                BackgroundImage.Source = null;
+            }
+
+            BackgroundImage.Opacity = App.Settings.Prop.WindowBackgroundOpacity;
         }
     }
 }
