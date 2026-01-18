@@ -15,6 +15,8 @@ namespace Bloxstrap.Models.Persistable
         public string WindowBackgroundImage { get; set; } = "";
         public double WindowBackgroundOpacity { get; set; } = 0.8;
         public bool AutoLogCleanup { get; set; } = false;
+        public bool EnableLuaScripting { get; set; } = false;
+        public int CpuCoreLimit { get; set; } = 0;
         public Theme Theme { get; set; } = Theme.Default;
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool DeveloperMode { get; set; } = false;
@@ -50,5 +52,26 @@ namespace Bloxstrap.Models.Persistable
 
         // mod preset configuration
         public bool UseDisableAppPatch { get; set; } = false;
+
+        // Advanced Voidstrap Configuration
+        public string SkyboxName { get; set; } = "Default";
+
+        public bool Crosshair { get; set; } = false;
+        public string CursorType { get; set; } = "Default";
+        public string ImageUrl { get; set; } = "";
+        public string CursorColorHex { get; set; } = "#FFFFFF";
+        public int CursorSize { get; set; } = 32;
+
+        public bool FPSCounter { get; set; } = false;
+        public bool ServerPingCounter { get; set; } = false;
+        public bool CurrentTimeDisplay { get; set; } = false;
+
+        public bool FakeVerifiedBadge { get; set; } = false;
+        public string FakeVerifiedUserId { get; set; } = "";
+
+        public bool HyperCoreThreading { get; set; } = false;
+        public bool DisablePostFX { get; set; } = false;
+        public bool DisableShadows { get; set; } = false;
+        public bool LowQualityTextures { get; set; } = false;
     }
 }

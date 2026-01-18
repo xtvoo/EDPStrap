@@ -77,7 +77,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
             { @"content\sounds\action_falling.mp3",           "Sounds.Empty.mp3"    },
             { @"content\sounds\action_jump_land.mp3",         "Sounds.Empty.mp3"    },
             { @"content\sounds\action_swim.mp3",              "Sounds.Empty.mp3"    },
-            { @"content\sounds\impact_water.mp3",             "Sounds.Empty.mp3"    }
+            { @"content\sounds\impact_water.mp3",             "Sounds.Empty.mp3"    },
+            { @"content\sounds\ouch.ogg",                     "Sounds.OldDeath.ogg" }
         });
 
         public EmojiModPresetTask EmojiFontTask { get; } = new();
@@ -102,6 +103,160 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public FontModPresetTask TextFontTask { get; } = new();
 
+        public bool EnableLuaScripting
+        {
+            get => App.Settings.Prop.EnableLuaScripting;
+            set
+            {
+                App.Settings.Prop.EnableLuaScripting = value;
+                OnPropertyChanged(nameof(EnableLuaScripting));
+                OnPropertyChanged(nameof(ScriptsFolderVisibility));
+            }
+        }
+
+        public Visibility ScriptsFolderVisibility => EnableLuaScripting ? Visibility.Visible : Visibility.Collapsed;
+
+        public ICommand OpenScriptsFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Base));
+
+        // Advanced Voidstrap Features
+
+        // Crosshair
+        public bool Crosshair
+        {
+            get => App.Settings.Prop.Crosshair;
+            set { App.Settings.Prop.Crosshair = value; OnPropertyChanged(nameof(Crosshair)); }
+        }
+
+        public string CursorColorHex
+        {
+            get => App.Settings.Prop.CursorColorHex;
+            set { App.Settings.Prop.CursorColorHex = value; OnPropertyChanged(nameof(CursorColorHex)); }
+        }
+
+        public int CursorSize
+        {
+            get => App.Settings.Prop.CursorSize;
+            set { App.Settings.Prop.CursorSize = value; OnPropertyChanged(nameof(CursorSize)); }
+        }
+
+         public string ImageUrl
+        {
+            get => App.Settings.Prop.ImageUrl;
+            set { App.Settings.Prop.ImageUrl = value; OnPropertyChanged(nameof(ImageUrl)); }
+        }
+
+
+        // Overlays
+        public bool FPSCounter
+        {
+            get => App.Settings.Prop.FPSCounter;
+            set { App.Settings.Prop.FPSCounter = value; OnPropertyChanged(nameof(FPSCounter)); }
+        }
+
+        public bool ServerPingCounter
+        {
+            get => App.Settings.Prop.ServerPingCounter;
+            set { App.Settings.Prop.ServerPingCounter = value; OnPropertyChanged(nameof(ServerPingCounter)); }
+        }
+
+         public bool CurrentTimeDisplay
+        {
+            get => App.Settings.Prop.CurrentTimeDisplay;
+            set { App.Settings.Prop.CurrentTimeDisplay = value; OnPropertyChanged(nameof(CurrentTimeDisplay)); }
+        }
+
+        // Skybox
+         public string SkyboxName
+        {
+            get => App.Settings.Prop.SkyboxName;
+            set { App.Settings.Prop.SkyboxName = value; OnPropertyChanged(nameof(SkyboxName)); }
+        }
+
+        public List<string> SkyboxSelections => new List<string>() { "Default", "Blue Sky", "Galaxy", "Purple", "Night" }; // Todo: Load dynamically or from enum
+        
+        // Fake Verified Badge
+        public bool FakeVerifiedBadge
+        {
+            get => App.Settings.Prop.FakeVerifiedBadge;
+            set
+            {
+                App.Settings.Prop.FakeVerifiedBadge = value;
+                UpdateFakeVerifiedFlag();
+                OnPropertyChanged(nameof(FakeVerifiedBadge));
+                OnPropertyChanged(nameof(FakeVerifiedUserIdVisibility));
+            }
+        }
+
+        public string FakeVerifiedUserId
+        {
+            get => App.Settings.Prop.FakeVerifiedUserId ?? "";
+            set
+            {
+                App.Settings.Prop.FakeVerifiedUserId = value;
+                UpdateFakeVerifiedFlag();
+                OnPropertyChanged(nameof(FakeVerifiedUserId));
+            }
+        }
+
+        public Visibility FakeVerifiedUserIdVisibility => FakeVerifiedBadge ? Visibility.Visible : Visibility.Collapsed;
+
+        private async void UpdateFakeVerifiedFlag()
+        {
+            if (FakeVerifiedBadge && !string.IsNullOrEmpty(FakeVerifiedUserId))
+            {
+                string input = FakeVerifiedUserId.Trim();
+                
+                // If input text contains non-digits, assume it's a username and try to resolve it
+                if (!long.TryParse(input, out _))
+                {
+                    try
+                    {
+                        var response = await App.HttpClient.GetAsync($"https://users.roblox.com/v1/users/search?keyword={input}&limit=10");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var json = await response.Content.ReadAsStringAsync();
+                            using var doc = System.Text.Json.JsonDocument.Parse(json);
+                            var data = doc.RootElement.GetProperty("data");
+                            if (data.GetArrayLength() > 0)
+                            {
+                                // Find exact match or first
+                                string? resolvedId = null;
+                                foreach (var user in data.EnumerateArray())
+                                {
+                                    if (string.Equals(user.GetProperty("name").GetString(), input, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        resolvedId = user.GetProperty("id").ToString();
+                                        break;
+                                    }
+                                }
+                                
+                                if (resolvedId == null)
+                                    resolvedId = data[0].GetProperty("id").ToString(); // fallback to first result
+
+                                if (resolvedId != null)
+                                {
+                                    FakeVerifiedUserId = resolvedId; // Update property (triggering this again, but it will be numeric now)
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine("ModsViewModel::UpdateFakeVerifiedFlag", $"Failed to resolve username: {ex.Message}");
+                    }
+                }
+
+                App.FastFlags.SetValue("FStringWhitelistVerifiedUserId", input);
+            }
+            else
+            {
+                App.FastFlags.SetValue("FStringWhitelistVerifiedUserId", null);
+            }
+            
+            App.FastFlags.Save();
+        }
+        
         private void OpenCompatSettings()
         {
             string path = new RobloxPlayerData().ExecutablePath;
@@ -110,7 +265,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 PInvoke.SHObjectProperties(HWND.Null, SHOP_TYPE.SHOP_FILEPATH, path, "Compatibility");
             else
                 Frontend.ShowMessageBox(Strings.Common_RobloxNotInstalled, MessageBoxImage.Error);
-
         }
     }
 }

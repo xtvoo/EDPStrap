@@ -1,0 +1,47 @@
+<ui:UiPage x:Class="Bloxstrap.UI.Elements.Settings.Pages.OptimizerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:controls="clr-namespace:Bloxstrap.UI.Elements.Controls"
+      xmlns:models="clr-namespace:Bloxstrap.UI.ViewModels.Settings"
+      xmlns:resources="clr-namespace:Bloxstrap.Resources"
+      d:DataContext="{d:DesignInstance Type=models:OptimizerViewModel}"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="OptimizerPage"
+      Scrollable="True">
+
+    <StackPanel Margin="0,0,14,14">
+
+        <TextBlock Margin="0,0,0,8" Text="Performance Enhancements and Optimizations" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+        <controls:OptionControl 
+            Header="CPU Core Limit"
+            Description="Limits the number of CPU cores Roblox can use. Useful for reducing CPU usage or testing performance on lower-end systems. Set to 0 to disable limit.">
+            <ui:NumberBox Min="0" Max="64" Value="{Binding CpuCoreLimit, Mode=TwoWay}" ClearButtonEnabled="False" />
+        </controls:OptionControl>
+
+        <TextBlock Text="Void-Mode Performance" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
+
+        <controls:OptionControl 
+            Header="Hyper Core Threading" 
+            Description="Forces Roblox to run at High Priority. May improve TPS/Ping stability on high-end CPUs.">
+            <ui:ToggleSwitch IsChecked="{Binding HyperCoreThreading, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="Disable Visual Effects" 
+            Description="Removes Post-Processing (Blur, Bloom, Sunrays). Huge FPS boost.">
+            <ui:ToggleSwitch IsChecked="{Binding DisablePostFX, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="Disable Shadows" 
+            Description="Removes dynamic shadows.">
+            <ui:ToggleSwitch IsChecked="{Binding DisableShadows, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+    </StackPanel>
+</ui:UiPage>

@@ -20,6 +20,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -46,7 +47,63 @@
                     <controls:MarkdownTextBlock Margin="0,2,0,0" FontSize="12" MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" TextWrapping="Wrap" />
                 </StackPanel>
             </ui:CardAction>
+
+            <ui:CardAction Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0" Icon="DocumentArrowRight24" Command="{Binding OpenScriptsFolderCommand}" Visibility="{Binding ScriptsFolderVisibility, Mode=OneWay}">
+                <StackPanel>
+                    <TextBlock FontSize="14" Text="Open Lua Scripts Folder" TextWrapping="Wrap" />
+                    <TextBlock Margin="0,2,0,0" FontSize="12" Text="Place your 'autoexecute.lua' and DLLs here." Foreground="{DynamicResource TextFillColorTertiaryBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+            </ui:CardAction>
         </Grid>
+        
+        <TextBlock Text="VoidstrapScripting" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
+
+        <controls:OptionControl 
+            Header="Enable Lua Scripting" 
+            Description="Allows execution of 'autoexecute.lua' and custom DLL plugins when Roblox launches.">
+            <ui:ToggleSwitch IsChecked="{Binding EnableLuaScripting, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="Fake Verified Badge" 
+            Description="Shows the verified badge on your client. You must enter your Roblox User ID correctly.">
+            <StackPanel Orientation="Vertical">
+                <ui:ToggleSwitch IsChecked="{Binding FakeVerifiedBadge, Mode=TwoWay}" Content="Enable" Margin="0,0,0,8" />
+                <ui:TextBox Width="200" PlaceholderText="Roblox User ID" Text="{Binding FakeVerifiedUserId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding FakeVerifiedUserIdVisibility, Mode=OneWay}" />
+            </StackPanel>
+        </controls:OptionControl>
+
+        <TextBlock Text="Advanced Features" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
+
+         <controls:OptionControl 
+            Header="Skybox Manager" 
+            Description="Choose a custom skybox to apply to Roblox.">
+            <ComboBox Margin="5,0,0,0" Padding="10,5,10,5" Width="200" ItemsSource="{Binding SkyboxSelections, Mode=OneTime}" Text="{Binding SkyboxName, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="Info Overlays" 
+            Description="Enable custom overlays for FPS, Ping, and Time.">
+            <StackPanel Orientation="Vertical">
+                <CheckBox Content="FPS Counter" IsChecked="{Binding FPSCounter, Mode=TwoWay}" Margin="0,0,0,4"/>
+                <CheckBox Content="Ping Counter" IsChecked="{Binding ServerPingCounter, Mode=TwoWay}" Margin="0,0,0,4"/>
+                <CheckBox Content="Time Display" IsChecked="{Binding CurrentTimeDisplay, Mode=TwoWay}"/>
+            </StackPanel>
+        </controls:OptionControl>
+
+         <controls:OptionControl 
+            Header="Custom Crosshair" 
+            Description="Enable to render a custom crosshair overlay.">
+            <StackPanel Orientation="Vertical" Width="250">
+                <ui:ToggleSwitch IsChecked="{Binding Crosshair, Mode=TwoWay}" Content="Enable Crosshair" Margin="0,0,0,8"/>
+                
+                <TextBlock Text="Size" Margin="0,4,0,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                <ui:NumberBox Value="{Binding CursorSize, Mode=TwoWay}" Min="4" Max="128" Step="2" />
+
+                <TextBlock Text="Color (Hex)" Margin="0,8,0,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                <TextBox Text="{Binding CursorColorHex, Mode=TwoWay}" />
+            </StackPanel>
+        </controls:OptionControl>
 
         <TextBlock Text="{x:Static resources:Strings.Common_Presets}" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
 

@@ -272,8 +272,49 @@ namespace Bloxstrap
                     if (t.Exception is not null)
                         App.FinalizeExceptionHandling(t.Exception);
                 }
+                else
+                {
+                    // Voidstrap Integrations
+                    if (App.Settings.Prop.EnableLuaScripting)
+                        LuaScriptManager.WaitForRobloxAndExecuteScript();
 
-                App.Terminate();
+                    if (App.Settings.Prop.CpuCoreLimit > 0)
+                        CpuCoreLimiter.SetCpuCoreLimit(App.Settings.Prop.CpuCoreLimit);
+
+                    bool keepOpen = false;
+
+                    if (App.Settings.Prop.FPSCounter || App.Settings.Prop.ServerPingCounter || App.Settings.Prop.CurrentTimeDisplay)
+                    {
+                         Application.Current.Dispatcher.Invoke(() => new UI.Elements.ContextMenu.OverlayWindow().Show());
+                         keepOpen = true;
+                    }
+
+                    if (App.Settings.Prop.Crosshair)
+                    {
+                         Application.Current.Dispatcher.Invoke(() => new UI.Elements.ContextMenu.CursorWindow().Show());
+                         keepOpen = true;
+                    }
+
+                    if (keepOpen)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Overlays enabled, keeping Bloxstrap open...");
+                        Task.Run(async () =>
+                        {
+                            // Wait for Roblox to close
+                            while (Process.GetProcessesByName("RobloxPlayerBeta").Length > 0)
+                            {
+                                await Task.Delay(2000);
+                            }
+
+                            App.Logger.WriteLine(LOG_IDENT, "Roblox closed, terminating...");
+                            App.Terminate();
+                        });
+                    }
+                    else
+                    {
+                        App.Terminate();
+                    }
+                }
             });
 
             dialog?.ShowBootstrapper();

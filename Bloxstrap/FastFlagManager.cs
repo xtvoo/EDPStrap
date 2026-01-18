@@ -41,6 +41,9 @@ namespace Bloxstrap
             // Texture quality
             { "Rendering.TextureQuality.OverrideEnabled", "DFFlagTextureQualityOverrideEnabled" },
             { "Rendering.TextureQuality.Level", "DFIntTextureQualityOverride" },
+
+            // Fake Verify
+            { "Fake.Verify", "FStringWhitelistVerifiedUserId" },
         };
 
         public static IReadOnlyDictionary<RenderingMode, string> RenderingModes => new Dictionary<RenderingMode, string>
@@ -158,8 +161,13 @@ namespace Bloxstrap
         {
             // convert all flag values to strings before saving
 
-            foreach (var pair in Prop)
-                Prop[pair.Key] = pair.Value.ToString()!;
+            foreach (var key in Prop.Keys.ToList())
+            {
+                if (Prop[key] == null) 
+                    Prop.Remove(key);
+                else 
+                    Prop[key] = Prop[key].ToString()!;
+            }
 
             base.Save();
 

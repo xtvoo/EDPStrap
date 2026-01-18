@@ -77,6 +77,10 @@ namespace Bloxstrap
 
         public string MutexName { get; set; } = "Bloxstrap-Bootstrapper";
         public bool QuitIfMutexExists { get; set; } = false;
+
+
+        public static readonly string PackFolder = Path.Combine(Paths.Base, "SkyboxPacks");
+        public static readonly string PackRepoZip = "https://github.com/KloBraticc/SkyboxPackV2/archive/refs/heads/main.zip";
         #endregion
 
         #region Core
@@ -1602,7 +1606,107 @@ namespace Bloxstrap
             if (!success)
                 App.Logger.WriteLine(LOG_IDENT, "Failed to apply all modifications");
 
+
+
+            // Apply Skybox
+            if (!String.IsNullOrEmpty(App.Settings.Prop.SkyboxName) && App.Settings.Prop.SkyboxName != "Default")
+            {
+               await EnsureSkyboxPackDownloadedAsync();
+               await ApplySkyboxAsync(App.Settings.Prop.SkyboxName, _latestVersionDirectory);
+            }
+
             return success;
+        }
+
+        public async Task EnsureSkyboxPackDownloadedAsync()
+        {
+            SetStatus("Updating Skybox Pack...");
+            string tempZipPath = Path.Combine(Path.GetTempPath(), "SkyboxPackV2.zip");
+
+            if (Directory.Exists(PackFolder) && Directory.GetDirectories(PackFolder).Length > 0)
+                 return; // Assume downloaded for now to save bandwidth/time, or check version
+
+            try
+            {
+                using var response = await App.HttpClient.GetAsync(PackRepoZip, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                using var stream = await response.Content.ReadAsStreamAsync();
+                using var fileStream = File.Create(tempZipPath);
+                await stream.CopyToAsync(fileStream);
+                fileStream.Close(); // Ensure closed before extraction
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("Bootstrapper::EnsureSkyboxPackDownloadedAsync", $"Failed to download Skybox Pack: {ex.Message}");
+                return;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(PackFolder);
+                new FastZip().ExtractZip(tempZipPath, PackFolder, null);
+                File.Delete(tempZipPath);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("Bootstrapper::EnsureSkyboxPackDownloadedAsync", $"Failed to extract Skybox Pack: {ex.Message}");
+            }
+        }
+
+        public static async Task ApplySkyboxAsync(string skyboxName, string versionFolder)
+        {
+            // The extracted zip usually has a root folder like "SkyboxPackV2-main"
+            // We need to find where the skybox folders actually are.
+            // Possibility 1: PackFolder/SkyboxName
+            // Possibility 2: PackFolder/SkyboxPackV2-main/SkyboxName
+            
+            string sourceFolder = Path.Combine(PackFolder, skyboxName);
+            
+            if (!Directory.Exists(sourceFolder))
+            {
+                // check subdirectories
+                var subDirs = Directory.GetDirectories(PackFolder);
+                foreach (var dir in subDirs)
+                {
+                     string potentialPath = Path.Combine(dir, skyboxName);
+                     if (Directory.Exists(potentialPath))
+                     {
+                         sourceFolder = potentialPath;
+                         break;
+                     }
+                }
+            }
+
+            if (!Directory.Exists(sourceFolder))
+            {
+                App.Logger.WriteLine("Bootstrapper::ApplySkyboxAsync", $"Skybox '{skyboxName}' not found in PackFolder.");
+                return;
+            }
+
+            string skyboxPath = Path.Combine(versionFolder, "PlatformContent", "pc", "textures", "sky");
+            
+            try
+            {
+                // Ensure parent dirs exist
+                Directory.CreateDirectory(Directory.GetParent(skyboxPath)!.FullName);
+
+                if (Directory.Exists(skyboxPath))
+                    Directory.Delete(skyboxPath, true);
+                
+                Directory.CreateDirectory(skyboxPath);
+
+                foreach (var file in Directory.GetFiles(sourceFolder))
+                {
+                    string dest = Path.Combine(skyboxPath, Path.GetFileName(file));
+                    File.Copy(file, dest, true);
+                }
+                 App.Logger.WriteLine("Bootstrapper::ApplySkyboxAsync", $"Applied skybox: {skyboxName}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("Bootstrapper::ApplySkyboxAsync", $"Failed to apply skybox: {ex.Message}");
+            }
         }
 
         private async Task DownloadPackage(Package package)
